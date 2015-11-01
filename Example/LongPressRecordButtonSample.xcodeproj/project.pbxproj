@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BF369CF51BE6BAD200E88DDC /* LongPressRecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF369CF41BE6BAD200E88DDC /* LongPressRecordButton.swift */; };
 		BFD64F431BE00E6C00C41517 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD64F421BE00E6C00C41517 /* AppDelegate.swift */; };
 		BFD64F451BE00E6C00C41517 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD64F441BE00E6C00C41517 /* ViewController.swift */; };
 		BFD64F481BE00E6C00C41517 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFD64F461BE00E6C00C41517 /* Main.storyboard */; };
@@ -15,7 +16,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		BFD64F3F1BE00E6C00C41517 /* RecordButtonSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RecordButtonSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF369CF41BE6BAD200E88DDC /* LongPressRecordButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LongPressRecordButton.swift; sourceTree = "<group>"; };
+		BFD64F3F1BE00E6C00C41517 /* LongPressRecordButtonSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LongPressRecordButtonSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFD64F421BE00E6C00C41517 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BFD64F441BE00E6C00C41517 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		BFD64F471BE00E6C00C41517 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -35,10 +37,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BF369CF31BE6BAD200E88DDC /* LongPressRecordButton */ = {
+			isa = PBXGroup;
+			children = (
+				BF369CF41BE6BAD200E88DDC /* LongPressRecordButton.swift */,
+			);
+			name = LongPressRecordButton;
+			path = ../../LongPressRecordButton;
+			sourceTree = "<group>";
+		};
 		BFD64F361BE00E6B00C41517 = {
 			isa = PBXGroup;
 			children = (
-				BFD64F411BE00E6C00C41517 /* RecordButtonSample */,
+				BFD64F411BE00E6C00C41517 /* LongPressRecordButtonSample */,
 				BFD64F401BE00E6C00C41517 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -46,14 +57,15 @@
 		BFD64F401BE00E6C00C41517 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				BFD64F3F1BE00E6C00C41517 /* RecordButtonSample.app */,
+				BFD64F3F1BE00E6C00C41517 /* LongPressRecordButtonSample.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		BFD64F411BE00E6C00C41517 /* RecordButtonSample */ = {
+		BFD64F411BE00E6C00C41517 /* LongPressRecordButtonSample */ = {
 			isa = PBXGroup;
 			children = (
+				BF369CF31BE6BAD200E88DDC /* LongPressRecordButton */,
 				BFD64F421BE00E6C00C41517 /* AppDelegate.swift */,
 				BFD64F441BE00E6C00C41517 /* ViewController.swift */,
 				BFD64F461BE00E6C00C41517 /* Main.storyboard */,
@@ -61,15 +73,15 @@
 				BFD64F4B1BE00E6C00C41517 /* LaunchScreen.storyboard */,
 				BFD64F4E1BE00E6C00C41517 /* Info.plist */,
 			);
-			path = RecordButtonSample;
+			path = LongPressRecordButtonSample;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		BFD64F3E1BE00E6C00C41517 /* RecordButtonSample */ = {
+		BFD64F3E1BE00E6C00C41517 /* LongPressRecordButtonSample */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = BFD64F511BE00E6C00C41517 /* Build configuration list for PBXNativeTarget "RecordButtonSample" */;
+			buildConfigurationList = BFD64F511BE00E6C00C41517 /* Build configuration list for PBXNativeTarget "LongPressRecordButtonSample" */;
 			buildPhases = (
 				BFD64F3B1BE00E6C00C41517 /* Sources */,
 				BFD64F3C1BE00E6C00C41517 /* Frameworks */,
@@ -79,9 +91,9 @@
 			);
 			dependencies = (
 			);
-			name = RecordButtonSample;
+			name = LongPressRecordButtonSample;
 			productName = RecordButtonSample;
-			productReference = BFD64F3F1BE00E6C00C41517 /* RecordButtonSample.app */;
+			productReference = BFD64F3F1BE00E6C00C41517 /* LongPressRecordButtonSample.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -99,7 +111,7 @@
 					};
 				};
 			};
-			buildConfigurationList = BFD64F3A1BE00E6B00C41517 /* Build configuration list for PBXProject "RecordButtonSample" */;
+			buildConfigurationList = BFD64F3A1BE00E6B00C41517 /* Build configuration list for PBXProject "LongPressRecordButtonSample" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -112,7 +124,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				BFD64F3E1BE00E6C00C41517 /* RecordButtonSample */,
+				BFD64F3E1BE00E6C00C41517 /* LongPressRecordButtonSample */,
 			);
 		};
 /* End PBXProject section */
@@ -136,6 +148,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BFD64F451BE00E6C00C41517 /* ViewController.swift in Sources */,
+				BF369CF51BE6BAD200E88DDC /* LongPressRecordButton.swift in Sources */,
 				BFD64F431BE00E6C00C41517 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -247,10 +260,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				INFOPLIST_FILE = RecordButtonSample/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/LongPressRecordButtonSample/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = de.mathiaskoehnke.RecordButtonSample;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = LongPressRecordButtonSample;
 			};
 			name = Debug;
 		};
@@ -258,17 +271,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				INFOPLIST_FILE = RecordButtonSample/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/LongPressRecordButtonSample/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = de.mathiaskoehnke.RecordButtonSample;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = LongPressRecordButtonSample;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		BFD64F3A1BE00E6B00C41517 /* Build configuration list for PBXProject "RecordButtonSample" */ = {
+		BFD64F3A1BE00E6B00C41517 /* Build configuration list for PBXProject "LongPressRecordButtonSample" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BFD64F4F1BE00E6C00C41517 /* Debug */,
@@ -277,13 +290,14 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BFD64F511BE00E6C00C41517 /* Build configuration list for PBXNativeTarget "RecordButtonSample" */ = {
+		BFD64F511BE00E6C00C41517 /* Build configuration list for PBXNativeTarget "LongPressRecordButtonSample" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BFD64F521BE00E6C00C41517 /* Debug */,
 				BFD64F531BE00E6C00C41517 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

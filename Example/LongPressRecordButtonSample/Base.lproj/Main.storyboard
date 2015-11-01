@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9059" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9049"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="LongPressRecordButtonSample" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="m3f-ET-RJt" customClass="LongPressRecordButton" customModule="LongPressRecordButtonSample" customModuleProvider="target">
+                                <rect key="frame" x="260" y="400" width="80" height="80"/>
+                                <animations/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="80" id="Ecc-Q5-Iy1"/>
+                                    <constraint firstAttribute="height" constant="80" id="lbv-5I-g2g"/>
+                                </constraints>
+                            </view>
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="au3-6a-vSc">
+                                <rect key="frame" x="190.5" y="328" width="205.5" height="2"/>
+                                <animations/>
+                                <color key="progressTintColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="trackTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </progressView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0 %" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NOE-W1-QI8">
+                                <rect key="frame" x="160" y="321" width="20.5" height="14.5"/>
+                                <animations/>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="100 %" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eQa-dg-cY6">
+                                <rect key="frame" x="406" y="321" width="34" height="14.5"/>
+                                <animations/>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="middleTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kFG-DY-nkW">
+                                <rect key="frame" x="160.5" y="108" width="280.5" height="150"/>
+                                <animations/>
+                                <attributedString key="attributedText">
+                                    <fragment>
+                                        <string key="content">LongPress
+RecordButton</string>
+                                        <attributes>
+                                            <color key="NSColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <font key="NSFont" size="42" name="HelveticaNeue-Bold"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment>
+                                        <string key="content" base64-UTF8="YES">
+Cg
+</string>
+                                        <attributes>
+                                            <color key="NSColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <font key="NSFont" size="42" name="HelveticaNeue"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content="Demo">
+                                        <attributes>
+                                            <color key="NSColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <font key="NSFont" size="42" name="HelveticaNeue-Thin"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <animations/>
+                        <color key="backgroundColor" red="0.20392156862745098" green="0.28627450980392155" blue="0.36862745098039218" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="m3f-ET-RJt" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" constant="140" id="GHn-aW-qcB"/>
+                            <constraint firstItem="kFG-DY-nkW" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="JVv-uI-ec2"/>
+                            <constraint firstItem="au3-6a-vSc" firstAttribute="top" secondItem="kFG-DY-nkW" secondAttribute="bottom" constant="70" id="JZW-ly-AE1"/>
+                            <constraint firstItem="NOE-W1-QI8" firstAttribute="centerY" secondItem="au3-6a-vSc" secondAttribute="centerY" id="SFC-PD-s7p"/>
+                            <constraint firstItem="m3f-ET-RJt" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Saw-8Y-nEZ"/>
+                            <constraint firstItem="au3-6a-vSc" firstAttribute="trailing" secondItem="kFG-DY-nkW" secondAttribute="trailing" constant="-45" id="XKy-OD-igZ"/>
+                            <constraint firstItem="eQa-dg-cY6" firstAttribute="leading" secondItem="au3-6a-vSc" secondAttribute="trailing" constant="10" id="ZHi-ed-mVx"/>
+                            <constraint firstItem="au3-6a-vSc" firstAttribute="leading" secondItem="kFG-DY-nkW" secondAttribute="leading" constant="30" id="av2-X4-o6f"/>
+                            <constraint firstItem="m3f-ET-RJt" firstAttribute="top" secondItem="au3-6a-vSc" secondAttribute="bottom" constant="70" id="ilA-9J-uGp"/>
+                            <constraint firstItem="au3-6a-vSc" firstAttribute="leading" secondItem="NOE-W1-QI8" secondAttribute="trailing" constant="10" id="qpD-hK-gHP"/>
+                            <constraint firstItem="eQa-dg-cY6" firstAttribute="centerY" secondItem="au3-6a-vSc" secondAttribute="centerY" id="uJS-Ll-bhH"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="530" y="194"/>
+        </scene>
+    </scenes>
+</document>
