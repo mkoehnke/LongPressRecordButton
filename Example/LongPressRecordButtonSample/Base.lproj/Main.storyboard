@@ -96,6 +96,10 @@ Cg
                             <constraint firstItem="eQa-dg-cY6" firstAttribute="centerY" secondItem="au3-6a-vSc" secondAttribute="centerY" id="uJS-Ll-bhH"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="progressView" destination="au3-6a-vSc" id="Emy-rv-pxD"/>
+                        <outlet property="recordButton" destination="m3f-ET-RJt" id="VSQ-Kc-hzD"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>

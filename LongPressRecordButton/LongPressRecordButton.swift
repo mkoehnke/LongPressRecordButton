@@ -1,14 +1,232 @@
 //
-//  LongPressButton.swift
-//  LongPressButton
+// LongPressRecordButton.swift
 //
-//  Created by apploft. GmbH on 27/10/15.
-//  Copyright © 2015 apploft. GmbH. All rights reserved.
+// Copyright (c) 2015 Mathias Koehnke (http://www.mathiaskoehnke.com)
 //
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
 
 import UIKit
 
+//================================================
+// MARK: Delegate
+//================================================
+
+@objc public protocol LongPressRecordButtonDelegate {
+    func longPressRecordButtonDidStartLongPress(button : LongPressRecordButton)
+    func longPressRecordButtonDidStopLongPress(button: LongPressRecordButton)
+    func longPressRecordButtonDidShowToolTip(button : LongPressRecordButton)
+}
+
+//================================================
+// MARK: RecordButton
+//================================================
+
+public class LongPressRecordButton : UIControl {
+    
+    public weak var delegate : LongPressRecordButtonDelegate?
+    
+    var minPressDuration : Double = 1.0
+    
+    var ringWidth : CGFloat = 4.0 {
+        didSet { redraw() }
+    }
+    
+    var ringColor = UIColor.whiteColor() {
+        didSet { redraw() }
+    }
+    
+    var circleMargin : CGFloat = 0.0 {
+        didSet { redraw() }
+    }
+    
+    var circleColor = UIColor.redColor() {
+        didSet { redraw() }
+    }
+    
+    lazy var toolTipText : String = {
+        return "Tap and Hold"
+    }()
+    
+    var toolTipFont : UIFont = {
+        return UIFont.systemFontOfSize(12.0)
+    }()
+    
+    var toolTipColor : UIColor = {
+        return UIColor.whiteColor()
+    }()
+    
+    var toolTipTextColor : UIColor = {
+        return UIColor(white: 0.0, alpha: 0.8)
+    }()
+    
+    
+    // MARK: Private
+    
+    private var longPressRecognizer : UILongPressGestureRecognizer!
+    private var touchesStarted : CFTimeInterval?
+    private var touchesEnded : Bool = false
+    private var shouldShowTooltip : Bool = true
+    
+    private var ringLayer : CAShapeLayer!
+    private var circleLayer : CAShapeLayer!
+    
+    private var outerRect : CGRect {
+        return CGRectMake(ringWidth/2, ringWidth/2, bounds.size.width-ringWidth, bounds.size.height-ringWidth)
+    }
+    
+    private var innerRect : CGRect {
+        let innerX = outerRect.origin.x + (ringWidth/2) + circleMargin
+        let innerY = outerRect.origin.y + (ringWidth/2) + circleMargin
+        let innerWidth = outerRect.size.width - ringWidth - (circleMargin * 2)
+        let innerHeight = outerRect.size.height - ringWidth - (circleMargin * 2)
+        return CGRectMake(innerX, innerY, innerWidth, innerHeight)
+    }
+    
+    override init (frame : CGRect) {
+        super.init(frame : frame)
+        commonInit()
+    }
+    
+    convenience init () {
+        self.init(frame:CGRect.zero)
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        commonInit()
+    }
+    
+    func commonInit() {
+        backgroundColor = UIColor.clearColor()
+        
+        ringLayer = CAShapeLayer()
+        ringLayer.fillColor = UIColor.clearColor().CGColor
+        ringLayer.frame = bounds
+        layer.addSublayer(ringLayer)
+        
+        circleLayer = CAShapeLayer()
+        circleLayer.frame = bounds
+        layer.addSublayer(circleLayer)
+        
+        redraw()
+        
+        longPressRecognizer = UILongPressGestureRecognizer(target: self, action: Selector("handleLongPress:"))
+        longPressRecognizer.cancelsTouchesInView = false
+        longPressRecognizer.minimumPressDuration = 0.3
+        self.addGestureRecognizer(longPressRecognizer)
+        addTarget(self, action: Selector("handleShortPress:"), forControlEvents: UIControlEvents.TouchUpInside)
+    }
+    
+    func redraw() {
+        ringLayer.lineWidth = ringWidth
+        ringLayer.strokeColor = ringColor.CGColor
+        ringLayer.path = UIBezierPath(ovalInRect: outerRect).CGPath
+        ringLayer.setNeedsDisplay()
+        
+        circleLayer.fillColor = circleColor.CGColor
+        circleLayer.path = UIBezierPath(ovalInRect: innerRect).CGPath
+        circleLayer.setNeedsDisplay()
+    }
+    
+    override public func layoutSubviews() {
+        super.layoutSubviews()
+        ringLayer.frame = bounds
+        circleLayer.frame = bounds
+    }
+    
+    @objc private func handleLongPress(recognizer: UILongPressGestureRecognizer) {
+        if (recognizer.state == .Began) {
+            buttonPressed()
+        } else if (recognizer.state == .Ended) {
+            buttonReleased()
+        }
+    }
+    
+    @objc private func handleShortPress(sender: AnyObject?) {
+        if shouldShowTooltip {
+            let tooltip = ToolTip(title: toolTipText, foregroundColor: toolTipTextColor, backgroundColor: toolTipColor, font: toolTipFont, recordButton: self)
+            tooltip.show()
+            delegate?.longPressRecordButtonDidShowToolTip(self)
+        }
+        shouldShowTooltip = true
+    }
+    
+    private func buttonPressed() {
+        if touchesStarted == nil {
+            circleLayer.fillColor = circleColor.darkerColor().CGColor
+            setNeedsDisplay()
+            touchesStarted = CACurrentMediaTime()
+            touchesEnded = false
+            shouldShowTooltip = false
+            
+            let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(minPressDuration * Double(NSEC_PER_SEC)))
+            dispatch_after(delayTime, dispatch_get_main_queue()) { [weak self] in
+                if let strongSelf = self {
+                    if strongSelf.touchesEnded { strongSelf.buttonReleased() }
+                }
+            }
+            delegate?.longPressRecordButtonDidStartLongPress(self)
+        }
+    }
+    
+    private func buttonReleased() {
+        if let touchesStarted = touchesStarted where (CACurrentMediaTime() - touchesStarted) >= minPressDuration {
+            self.touchesStarted = nil
+            enabled = true
+            circleLayer.fillColor = circleColor.CGColor
+            delegate?.longPressRecordButtonDidStopLongPress(self)
+        } else {
+            touchesEnded = true
+            enabled = false
+        }
+    }
+    
+    override public var enabled: Bool {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
+    
+    func ringColorForState(state : UIControlState) -> UIColor? {
+        return colorForState(ringColor, state: state)
+    }
+    
+    func circleColorForState(state: UIControlState) -> UIColor? {
+        return colorForState(circleColor, state: state)
+    }
+    
+    func colorForState(color: UIColor, state : UIControlState) -> UIColor? {
+        switch state {
+        case UIControlState.Normal: return color
+        case UIControlState.Highlighted: return color.colorWithAlphaComponent(0.5)
+        case UIControlState.Disabled: return color.colorWithAlphaComponent(0.5)
+        case UIControlState.Selected: return color.colorWithAlphaComponent(0.5)
+        default: return nil
+        }
+    }
+}
+
+
+//================================================
 // MARK: Extensions
+//================================================
 
 private extension NSAttributedString {
     private func sizeToFit(maxSize: CGSize) -> CGSize {
@@ -32,25 +250,32 @@ private extension UIColor {
     }
 }
 
+
+//================================================
 // MARK: ToolTip
+//================================================
 
 private class ToolTip : CAShapeLayer {
     
+    private weak var recordButton : LongPressRecordButton?
     private let defaultMargin : CGFloat = 5.0
     private let defaultArrowSize : CGFloat = 5.0
     private let defaultCornerRadius : CGFloat = 5.0
     private var textLayer : CATextLayer!
     
-    init(title: String, foregroundColor: UIColor, backgroundColor: UIColor, font: UIFont, rect: CGRect) {
+    init(title: String, foregroundColor: UIColor, backgroundColor: UIColor, font: UIFont, recordButton: LongPressRecordButton) {
         super.init()
-        commonInit(title, foregroundColor: foregroundColor, backgroundColor: backgroundColor, font: font, rect: rect)
+        commonInit(title, foregroundColor: foregroundColor, backgroundColor: backgroundColor, font: font, recordButton: recordButton)
     }
-
+    
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
-
-    private func commonInit(title: String, foregroundColor: UIColor, backgroundColor: UIColor, font: UIFont, rect: CGRect) {
+    
+    private func commonInit(title: String, foregroundColor: UIColor, backgroundColor: UIColor, font: UIFont, recordButton: LongPressRecordButton) {
+        self.recordButton = recordButton
+        
+        let rect = recordButton.bounds
         let text = NSAttributedString(string: title, attributes: [NSFontAttributeName : font, NSForegroundColorAttributeName : foregroundColor])
         
         // TextLayer
@@ -75,7 +300,7 @@ private class ToolTip : CAShapeLayer {
         addSublayer(textLayer)
     }
     
-    func toolTipPath(frame: CGRect, arrowSize: CGFloat, radius: CGFloat) -> UIBezierPath {
+    private func toolTipPath(frame: CGRect, arrowSize: CGFloat, radius: CGFloat) -> UIBezierPath {
         let mid = CGRectGetMidX(frame)
         let width = CGRectGetMaxX(frame)
         let height = CGRectGetMaxY(frame)
@@ -102,7 +327,7 @@ private class ToolTip : CAShapeLayer {
         textLayer.frame = CGRectMake(defaultMargin, defaultMargin, bounds.size.width-(defaultMargin*2), bounds.size.height-(defaultMargin*2))
     }
     
-    func animation(fromTransform: CATransform3D, toTransform: CATransform3D) -> CASpringAnimation {
+    private func animation(fromTransform: CATransform3D, toTransform: CATransform3D) -> CASpringAnimation {
         let animation = CASpringAnimation(keyPath: "transform")
         animation.damping = 15
         animation.initialVelocity = 10
@@ -116,149 +341,13 @@ private class ToolTip : CAShapeLayer {
         return animation
     }
     
-    func show(view: UIView?) {
-        view?.layer.addSublayer(self)
+    func show() {
+        recordButton?.layer.addSublayer(self)
         let show = animation(CATransform3DMakeScale(0, 0, 1), toTransform: CATransform3DIdentity)
         addAnimation(show, forKey: "show")
     }
     
     override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
         removeFromSuperlayer()
-    }
-}
-
-// MARK: RecordButton
-
-class LongPressRecordButton : UIControl {
-    
-    var minPressDuration : Double = 1.0
-    
-    var ringWidth : CGFloat = 4.0
-    var ringColor = UIColor.whiteColor()
-    
-    var circleMargin : CGFloat = 0.0;
-    var circleColor = UIColor.redColor()
-    
-    var toolTipText : String = "Tap and Hold"
-    var toolTipFont : UIFont = UIFont.systemFontOfSize(12.0)
-    var toolTipColor : UIColor = UIColor.whiteColor()
-    var toolTipTextColor : UIColor = UIColor(white: 0.0, alpha: 0.8)
-    
-    // MARK: Private
-    
-    private var longPressRecognizer : UILongPressGestureRecognizer!
-    private var touchesStarted : CFTimeInterval?
-    private var touchesEnded : Bool = false
-    private var shouldShowTooltip : Bool = true
-    
-    private var ringLayer : CAShapeLayer!
-    private var circleLayer : CAShapeLayer!
-    
-    private var tooltip : ToolTip?
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        backgroundColor = UIColor.clearColor()
-        
-        let outerRect = CGRectMake(ringWidth/2, ringWidth/2, bounds.size.width-ringWidth, bounds.size.height-ringWidth)
-        ringLayer = CAShapeLayer()
-        ringLayer.fillColor = UIColor.clearColor().CGColor
-        ringLayer.lineWidth = ringWidth
-        ringLayer.path = UIBezierPath(ovalInRect: outerRect).CGPath
-        ringLayer.strokeColor = ringColor.CGColor
-        ringLayer.frame = bounds
-        layer.addSublayer(ringLayer)
-        
-        circleLayer = CAShapeLayer()
-        circleLayer.fillColor = circleColor.CGColor
-        let innerX = outerRect.origin.x + (ringWidth/2) + circleMargin
-        let innerY = outerRect.origin.y + (ringWidth/2) + circleMargin
-        let innerWidth = outerRect.size.width - ringWidth - (circleMargin * 2)
-        let innerHeight = outerRect.size.height - ringWidth - (circleMargin * 2)
-        circleLayer.path = UIBezierPath(ovalInRect: CGRectMake(innerX, innerY, innerWidth, innerHeight)).CGPath
-        layer.addSublayer(circleLayer)
-        
-        
-        longPressRecognizer = UILongPressGestureRecognizer(target: self, action: Selector("handleLongPress:"))
-        longPressRecognizer.cancelsTouchesInView = false
-        longPressRecognizer.minimumPressDuration = 0.3
-        self.addGestureRecognizer(longPressRecognizer)
-        addTarget(self, action: Selector("handleShortPress:"), forControlEvents: UIControlEvents.TouchUpInside)
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        ringLayer.frame = bounds
-    }
-    
-    @objc private func handleLongPress(recognizer: UILongPressGestureRecognizer) {
-        if (recognizer.state == .Began) {
-            buttonPressed()
-        } else if (recognizer.state == .Ended) {
-            buttonReleased()
-        }
-    }
-    
-    @objc private func handleShortPress(sender: AnyObject?) {
-        if shouldShowTooltip {
-            print("Short")
-            tooltip = ToolTip(title: toolTipText, foregroundColor: toolTipTextColor, backgroundColor: toolTipColor, font: toolTipFont, rect: frame)
-            tooltip!.show(superview)
-        }
-        shouldShowTooltip = true
-    }
-    
-    private func buttonPressed() {
-        if touchesStarted == nil {
-            circleLayer.fillColor = circleColor.darkerColor().CGColor
-            setNeedsDisplay()
-            touchesStarted = CACurrentMediaTime()
-            touchesEnded = false
-            shouldShowTooltip = false
-            
-            let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(minPressDuration * Double(NSEC_PER_SEC)))
-            dispatch_after(delayTime, dispatch_get_main_queue()) { [weak self] in
-                if let strongSelf = self {
-                    if strongSelf.touchesEnded { strongSelf.buttonReleased() }
-                }
-            }
-            print("Press")
-        }
-    }
-    
-    private func buttonReleased() {
-        if let touchesStarted = touchesStarted where (CACurrentMediaTime() - touchesStarted) >= minPressDuration {
-            self.touchesStarted = nil
-            enabled = true
-            circleLayer.fillColor = circleColor.CGColor
-            print("Release")
-        } else {
-            touchesEnded = true
-            enabled = false
-        }
-    }
-    
-    override var enabled: Bool {
-        didSet {
-            setNeedsDisplay()
-        }
-    }
-    
-    func ringColorForState(state : UIControlState) -> UIColor? {
-        return colorForState(ringColor, state: state)
-    }
-    
-    func circleColorForState(state: UIControlState) -> UIColor? {
-        return colorForState(circleColor, state: state)
-    }
-    
-    func colorForState(color: UIColor, state : UIControlState) -> UIColor? {
-        switch state {
-        case UIControlState.Normal: return color
-        case UIControlState.Highlighted: return color.colorWithAlphaComponent(0.5)
-        case UIControlState.Disabled: return color.colorWithAlphaComponent(0.5)
-        case UIControlState.Selected: return color.colorWithAlphaComponent(0.5)
-        default: return nil
-        }
     }
 }
