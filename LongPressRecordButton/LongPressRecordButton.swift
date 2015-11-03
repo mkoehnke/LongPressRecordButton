@@ -40,38 +40,52 @@ import UIKit
 
 public class LongPressRecordButton : UIControl {
     
+    /// The delegate of the LongPressRecordButton instance.
     public weak var delegate : LongPressRecordButtonDelegate?
     
+    /// The minmal duration, that the record button is supposed
+    /// to stay in the 'selected' state, once the long press has
+    /// started.
     var minPressDuration : Double = 1.0
     
+    /// The width of the outer ring of the record button.
     var ringWidth : CGFloat = 4.0 {
         didSet { redraw() }
     }
     
+    /// The color of the outer ring of the record button.
     var ringColor = UIColor.whiteColor() {
         didSet { redraw() }
     }
     
+    /// The margin between the outer ring and inner circle
+    /// of the record button.
     var circleMargin : CGFloat = 0.0 {
         didSet { redraw() }
     }
     
+    /// The color of the inner circle of the record button.
     var circleColor = UIColor.redColor() {
         didSet { redraw() }
     }
     
+    /// The text that the tooltip is supposed to display,
+    /// if the user did short-press the button.
     lazy var toolTipText : String = {
         return "Tap and Hold"
     }()
     
+    /// The font of the tooltip text.
     var toolTipFont : UIFont = {
         return UIFont.systemFontOfSize(12.0)
     }()
     
+    /// The background color of the tooltip.
     var toolTipColor : UIColor = {
         return UIColor.whiteColor()
     }()
     
+    /// The text color of the tooltip.
     var toolTipTextColor : UIColor = {
         return UIColor(white: 0.0, alpha: 0.8)
     }()
@@ -189,35 +203,37 @@ public class LongPressRecordButton : UIControl {
     private func buttonReleased() {
         if let touchesStarted = touchesStarted where (CACurrentMediaTime() - touchesStarted) >= minPressDuration {
             self.touchesStarted = nil
-            enabled = true
             circleLayer.fillColor = circleColor.CGColor
             delegate?.longPressRecordButtonDidStopLongPress(self)
         } else {
             touchesEnded = true
-            enabled = false
         }
     }
     
     override public var enabled: Bool {
         didSet {
-            setNeedsDisplay()
+            let state : UIControlState = enabled ? .Normal : .Disabled
+            circleLayer.fillColor = circleColorForState(state)?.CGColor
+            ringLayer.strokeColor = ringColorForState(state)?.CGColor
         }
     }
     
     func ringColorForState(state : UIControlState) -> UIColor? {
-        return colorForState(ringColor, state: state)
+        switch state {
+        case UIControlState.Normal: return ringColor
+        case UIControlState.Highlighted: return ringColor
+        case UIControlState.Disabled: return ringColor.colorWithAlphaComponent(0.5)
+        case UIControlState.Selected: return ringColor
+        default: return nil
+        }
     }
     
     func circleColorForState(state: UIControlState) -> UIColor? {
-        return colorForState(circleColor, state: state)
-    }
-    
-    func colorForState(color: UIColor, state : UIControlState) -> UIColor? {
         switch state {
-        case UIControlState.Normal: return color
-        case UIControlState.Highlighted: return color.colorWithAlphaComponent(0.5)
-        case UIControlState.Disabled: return color.colorWithAlphaComponent(0.5)
-        case UIControlState.Selected: return color.colorWithAlphaComponent(0.5)
+        case UIControlState.Normal: return circleColor
+        case UIControlState.Highlighted: return circleColor.darkerColor()
+        case UIControlState.Disabled: return circleColor.colorWithAlphaComponent(0.5)
+        case UIControlState.Selected: return circleColor.darkerColor()
         default: return nil
         }
     }
