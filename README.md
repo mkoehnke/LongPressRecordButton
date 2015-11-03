@@ -1,14 +1,8 @@
 # LongPressRecordButton
 
-Simple and ease to use record button for iOS that enforces a long press (and shows a tooltip when short-pressed) similar to the Instagram app.
+Simple and ease to use record button for iOS that enforces a long press (and shows a tooltip when short-pressed) similar to the Instagram app. Take a look at the sample project for further information.
 
-<img src="">
-
-# Installation
-Copy the **LongPressRecordButton.swift** file to your Swift project, add it to your target and you're good to go.
-
-# Usage
-Take a look at the sample project for further information.
+<img src="https://github.com/mkoehnke/LongPressRecordButton/blob/master/Resources/LongPressRecordButton.gif">
 
 # Author
 Mathias Köhnke [@mkoehnke](http://twitter.com/mkoehnke)
