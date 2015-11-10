@@ -38,7 +38,7 @@ import UIKit
 // MARK: RecordButton
 //================================================
 
-public class LongPressRecordButton : UIControl {
+@IBDesignable public class LongPressRecordButton : UIControl {
     
     /// The delegate of the LongPressRecordButton instance.
     public weak var delegate : LongPressRecordButtonDelegate?
@@ -236,6 +236,13 @@ public class LongPressRecordButton : UIControl {
         case UIControlState.Selected: return circleColor.darkerColor()
         default: return nil
         }
+    }
+    
+    public override func prepareForInterfaceBuilder() {
+        super.prepareForInterfaceBuilder()
+        backgroundColor = UIColor.clearColor()
+        ringWidth = 4.0
+        circleMargin = 0.0
     }
 }
 
