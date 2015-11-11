@@ -46,26 +46,26 @@ import UIKit
     /// The minmal duration, that the record button is supposed
     /// to stay in the 'selected' state, once the long press has
     /// started.
-    var minPressDuration : Double = 1.0
+    @IBInspectable var minPressDuration : Float = 1.0
     
     /// The width of the outer ring of the record button.
-    var ringWidth : CGFloat = 4.0 {
+    @IBInspectable var ringWidth : CGFloat = 4.0 {
         didSet { redraw() }
     }
     
     /// The color of the outer ring of the record button.
-    var ringColor = UIColor.whiteColor() {
+    @IBInspectable var ringColor : UIColor? = UIColor.whiteColor() {
         didSet { redraw() }
     }
     
     /// The margin between the outer ring and inner circle
     /// of the record button.
-    var circleMargin : CGFloat = 0.0 {
+    @IBInspectable var circleMargin : CGFloat = 0.0 {
         didSet { redraw() }
     }
     
     /// The color of the inner circle of the record button.
-    var circleColor = UIColor.redColor() {
+    @IBInspectable var circleColor : UIColor? = UIColor.redColor() {
         didSet { redraw() }
     }
     
@@ -150,11 +150,11 @@ import UIKit
     
     func redraw() {
         ringLayer.lineWidth = ringWidth
-        ringLayer.strokeColor = ringColor.CGColor
+        ringLayer.strokeColor = ringColor?.CGColor
         ringLayer.path = UIBezierPath(ovalInRect: outerRect).CGPath
         ringLayer.setNeedsDisplay()
         
-        circleLayer.fillColor = circleColor.CGColor
+        circleLayer.fillColor = circleColor?.CGColor
         circleLayer.path = UIBezierPath(ovalInRect: innerRect).CGPath
         circleLayer.setNeedsDisplay()
     }
@@ -184,13 +184,13 @@ import UIKit
     
     private func buttonPressed() {
         if touchesStarted == nil {
-            circleLayer.fillColor = circleColor.darkerColor().CGColor
+            circleLayer.fillColor = circleColor?.darkerColor().CGColor
             setNeedsDisplay()
             touchesStarted = CACurrentMediaTime()
             touchesEnded = false
             shouldShowTooltip = false
             
-            let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(minPressDuration * Double(NSEC_PER_SEC)))
+            let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(minPressDuration) * Double(NSEC_PER_SEC)))
             dispatch_after(delayTime, dispatch_get_main_queue()) { [weak self] in
                 if let strongSelf = self {
                     if strongSelf.touchesEnded { strongSelf.buttonReleased() }
@@ -201,9 +201,9 @@ import UIKit
     }
     
     private func buttonReleased() {
-        if let touchesStarted = touchesStarted where (CACurrentMediaTime() - touchesStarted) >= minPressDuration {
+        if let touchesStarted = touchesStarted where (CACurrentMediaTime() - touchesStarted) >= Double(minPressDuration) {
             self.touchesStarted = nil
-            circleLayer.fillColor = circleColor.CGColor
+            circleLayer.fillColor = circleColor?.CGColor
             delegate?.longPressRecordButtonDidStopLongPress(self)
         } else {
             touchesEnded = true
@@ -222,7 +222,7 @@ import UIKit
         switch state {
         case UIControlState.Normal: return ringColor
         case UIControlState.Highlighted: return ringColor
-        case UIControlState.Disabled: return ringColor.colorWithAlphaComponent(0.5)
+        case UIControlState.Disabled: return ringColor?.colorWithAlphaComponent(0.5)
         case UIControlState.Selected: return ringColor
         default: return nil
         }
@@ -231,9 +231,9 @@ import UIKit
     func circleColorForState(state: UIControlState) -> UIColor? {
         switch state {
         case UIControlState.Normal: return circleColor
-        case UIControlState.Highlighted: return circleColor.darkerColor()
-        case UIControlState.Disabled: return circleColor.colorWithAlphaComponent(0.5)
-        case UIControlState.Selected: return circleColor.darkerColor()
+        case UIControlState.Highlighted: return circleColor?.darkerColor()
+        case UIControlState.Disabled: return circleColor?.colorWithAlphaComponent(0.5)
+        case UIControlState.Selected: return circleColor?.darkerColor()
         default: return nil
         }
     }
@@ -241,8 +241,6 @@ import UIKit
     public override func prepareForInterfaceBuilder() {
         super.prepareForInterfaceBuilder()
         backgroundColor = UIColor.clearColor()
-        ringWidth = 4.0
-        circleMargin = 0.0
     }
 }
 
