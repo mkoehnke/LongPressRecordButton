@@ -28,6 +28,7 @@ import UIKit
 // MARK: Delegate
 //================================================
 
+/// The delegate protocol of LongPressRecordButton.
 @objc public protocol LongPressRecordButtonDelegate {
     /// Tells the delegate that a long press has started.
     func longPressRecordButtonDidStartLongPress(button : LongPressRecordButton)
@@ -41,6 +42,7 @@ import UIKit
 // MARK: RecordButton
 //================================================
 
+/// The LongPressRecordButton class.
 @IBDesignable public class LongPressRecordButton : UIControl {
     
     /// The delegate of the LongPressRecordButton instance.
