@@ -29,8 +29,11 @@ import UIKit
 //================================================
 
 @objc public protocol LongPressRecordButtonDelegate {
+    /// Tells the delegate that a long press has started.
     func longPressRecordButtonDidStartLongPress(button : LongPressRecordButton)
+    /// Tells the delegate that a long press has finished.
     func longPressRecordButtonDidStopLongPress(button: LongPressRecordButton)
+    /// Tells the delegate that a short press has occured and therefore a tooltip is shown.
     func longPressRecordButtonDidShowToolTip(button : LongPressRecordButton)
 }
 
@@ -46,49 +49,77 @@ import UIKit
     /// The minmal duration, that the record button is supposed
     /// to stay in the 'selected' state, once the long press has
     /// started.
-    @IBInspectable var minPressDuration : Float = 1.0
+    @IBInspectable public var minPressDuration : Float = 1.0
     
     /// The width of the outer ring of the record button.
-    @IBInspectable var ringWidth : CGFloat = 4.0 {
+    @IBInspectable public var ringWidth : CGFloat = 4.0 {
         didSet { redraw() }
     }
     
     /// The color of the outer ring of the record button.
-    @IBInspectable var ringColor : UIColor? = UIColor.whiteColor() {
+    @IBInspectable public var ringColor : UIColor? = UIColor.whiteColor() {
         didSet { redraw() }
     }
     
     /// The margin between the outer ring and inner circle
     /// of the record button.
-    @IBInspectable var circleMargin : CGFloat = 0.0 {
+    @IBInspectable public var circleMargin : CGFloat = 0.0 {
         didSet { redraw() }
     }
     
     /// The color of the inner circle of the record button.
-    @IBInspectable var circleColor : UIColor? = UIColor.redColor() {
+    @IBInspectable public var circleColor : UIColor? = UIColor.redColor() {
         didSet { redraw() }
     }
     
     /// The text that the tooltip is supposed to display,
     /// if the user did short-press the button.
-    lazy var toolTipText : String = {
+    public lazy var toolTipText : String = {
         return "Tap and Hold"
     }()
     
     /// The font of the tooltip text.
-    var toolTipFont : UIFont = {
+    public var toolTipFont : UIFont = {
         return UIFont.systemFontOfSize(12.0)
     }()
     
     /// The background color of the tooltip.
-    var toolTipColor : UIColor = {
+    public var toolTipColor : UIColor = {
         return UIColor.whiteColor()
     }()
     
     /// The text color of the tooltip.
-    var toolTipTextColor : UIColor = {
+    public var toolTipTextColor : UIColor = {
         return UIColor(white: 0.0, alpha: 0.8)
     }()
+    
+    /// Determines if the record button is enabled.
+    override public var enabled: Bool {
+        didSet {
+            let state : UIControlState = enabled ? .Normal : .Disabled
+            circleLayer.fillColor = circleColorForState(state)?.CGColor
+            ringLayer.strokeColor = ringColorForState(state)?.CGColor
+        }
+    }
+    
+    // MARK: Initializers
+    
+    /// Initializer
+    override init (frame : CGRect) {
+        super.init(frame : frame)
+        commonInit()
+    }
+    
+    /// Initializer
+    convenience init () {
+        self.init(frame:CGRect.zero)
+    }
+    
+    /// Initializer
+    required public init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        commonInit()
+    }
     
     
     // MARK: Private
@@ -113,21 +144,7 @@ import UIKit
         return CGRectMake(innerX, innerY, innerWidth, innerHeight)
     }
     
-    override init (frame : CGRect) {
-        super.init(frame : frame)
-        commonInit()
-    }
-    
-    convenience init () {
-        self.init(frame:CGRect.zero)
-    }
-    
-    required public init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        commonInit()
-    }
-    
-    func commonInit() {
+    private func commonInit() {
         backgroundColor = UIColor.clearColor()
         
         ringLayer = CAShapeLayer()
@@ -148,7 +165,7 @@ import UIKit
         addTarget(self, action: Selector("handleShortPress:"), forControlEvents: UIControlEvents.TouchUpInside)
     }
     
-    func redraw() {
+    private func redraw() {
         ringLayer.lineWidth = ringWidth
         ringLayer.strokeColor = ringColor?.CGColor
         ringLayer.path = UIBezierPath(ovalInRect: outerRect).CGPath
@@ -159,6 +176,7 @@ import UIKit
         circleLayer.setNeedsDisplay()
     }
     
+    /// Sublayer layouting
     override public func layoutSubviews() {
         super.layoutSubviews()
         ringLayer.frame = bounds
@@ -216,15 +234,7 @@ import UIKit
         }
     }
     
-    override public var enabled: Bool {
-        didSet {
-            let state : UIControlState = enabled ? .Normal : .Disabled
-            circleLayer.fillColor = circleColorForState(state)?.CGColor
-            ringLayer.strokeColor = ringColorForState(state)?.CGColor
-        }
-    }
-    
-    func ringColorForState(state : UIControlState) -> UIColor? {
+    private func ringColorForState(state : UIControlState) -> UIColor? {
         switch state {
         case UIControlState.Normal: return ringColor
         case UIControlState.Highlighted: return ringColor
@@ -234,7 +244,7 @@ import UIKit
         }
     }
     
-    func circleColorForState(state: UIControlState) -> UIColor? {
+    private func circleColorForState(state: UIControlState) -> UIColor? {
         switch state {
         case UIControlState.Normal: return circleColor
         case UIControlState.Highlighted: return circleColor?.darkerColor()
@@ -244,6 +254,7 @@ import UIKit
         }
     }
     
+    /// @IBDesignable support
     public override func prepareForInterfaceBuilder() {
         super.prepareForInterfaceBuilder()
         backgroundColor = UIColor.clearColor()
