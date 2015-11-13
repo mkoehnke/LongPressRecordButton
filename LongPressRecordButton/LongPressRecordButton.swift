@@ -175,11 +175,17 @@ import UIKit
     
     @objc private func handleShortPress(sender: AnyObject?) {
         if shouldShowTooltip {
-            let tooltip = ToolTip(title: toolTipText, foregroundColor: toolTipTextColor, backgroundColor: toolTipColor, font: toolTipFont, recordButton: self)
-            tooltip.show()
-            delegate?.longPressRecordButtonDidShowToolTip(self)
+            if isTooltipVisible() == false {
+                let tooltip = ToolTip(title: toolTipText, foregroundColor: toolTipTextColor, backgroundColor: toolTipColor, font: toolTipFont, recordButton: self)
+                tooltip.show()
+                delegate?.longPressRecordButtonDidShowToolTip(self)
+            }
         }
         shouldShowTooltip = true
+    }
+    
+    private func isTooltipVisible() -> Bool {
+        return layer.sublayers?.filter { $0.isKindOfClass(ToolTip.self) }.count > 0
     }
     
     private func buttonPressed() {
