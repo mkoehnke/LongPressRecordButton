@@ -10,6 +10,37 @@ Simple and easy-to-use record button for iOS, that enforces a long press (and sh
 
 <img src="https://github.com/mkoehnke/LongPressRecordButton/blob/master/Resources/LongPressRecordButton.gif">
 
+# Installation
+
+## Cocoapods
+[CocoaPods](http://cocoapods.org) is a dependency manager for Cocoa projects. You can install it with the following command:
+
+```bash
+$ gem install cocoapods
+```
+
+To integrate the LongPressRecordButton into your Xcode project using CocoaPods, specify it in your `Podfile`:
+
+```ruby
+source 'https://github.com/CocoaPods/Specs.git'
+platform :ios, '9.0'
+use_frameworks!
+
+pod 'LongPressRecordButton'
+```
+
+Then, run the following command:
+
+```bash
+$ pod install
+```
+
+## Manually
+Copy the **LongPressRecordButton.swift** file to your Swift project, add it to a target and you're good to go.
+
+# Usage
+The easiest way to get started is to add the LongPressRecordButton as a custom view in your Storyboard. The appearance can be easily customized using the __Attributes Inspector__ in the _Xcode Utilities area_. 
+
 # Author
 Mathias Köhnke [@mkoehnke](http://twitter.com/mkoehnke)
 
