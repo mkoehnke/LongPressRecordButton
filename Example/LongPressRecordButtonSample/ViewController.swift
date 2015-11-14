@@ -53,10 +53,6 @@ class ViewController: UIViewController, LongPressRecordButtonDelegate {
     
     // MARK: LongPressRecordButton Delegate
     
-    func longPressRecordButtonDidShowToolTip(button: LongPressRecordButton) {
-        NSLog("Short Press")
-    }
-    
     func longPressRecordButtonDidStartLongPress(button: LongPressRecordButton) {
         startTime = CACurrentMediaTime();
         displayLink?.paused = false

@@ -34,8 +34,10 @@ import UIKit
     func longPressRecordButtonDidStartLongPress(button : LongPressRecordButton)
     /// Tells the delegate that a long press has finished.
     func longPressRecordButtonDidStopLongPress(button: LongPressRecordButton)
+    /// Tells the delegate that a tool tip should be presented when a short press occured.
+    optional func longPressRecordButtonShouldShowToolTip(button : LongPressRecordButton) -> Bool
     /// Tells the delegate that a short press has occured and therefore a tooltip is shown.
-    func longPressRecordButtonDidShowToolTip(button : LongPressRecordButton)
+    optional func longPressRecordButtonDidShowToolTip(button : LongPressRecordButton)
 }
 
 //================================================
@@ -195,10 +197,10 @@ import UIKit
     
     @objc private func handleShortPress(sender: AnyObject?) {
         if shouldShowTooltip {
-            if isTooltipVisible() == false {
+            if isTooltipVisible() == false && delegate?.longPressRecordButtonShouldShowToolTip?(self) == true {
                 let tooltip = ToolTip(title: toolTipText, foregroundColor: toolTipTextColor, backgroundColor: toolTipColor, font: toolTipFont, recordButton: self)
                 tooltip.show()
-                delegate?.longPressRecordButtonDidShowToolTip(self)
+                delegate?.longPressRecordButtonDidShowToolTip?(self)
             }
         }
         shouldShowTooltip = true
