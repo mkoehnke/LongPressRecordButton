@@ -12,7 +12,7 @@ Simple and easy-to-use record button for iOS, that enforces a long press (and sh
 
 # Installation
 
-## Cocoapods
+## CocoaPods
 [CocoaPods](http://cocoapods.org) is a dependency manager for Cocoa projects. You can install it with the following command:
 
 ```bash
