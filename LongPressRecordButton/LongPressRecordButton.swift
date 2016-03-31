@@ -162,11 +162,11 @@ import UIKit
         
         redraw()
         
-        longPressRecognizer = UILongPressGestureRecognizer(target: self, action: Selector("handleLongPress:"))
+        longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(LongPressRecordButton.handleLongPress(_:)))
         longPressRecognizer.cancelsTouchesInView = false
         longPressRecognizer.minimumPressDuration = 0.3
         self.addGestureRecognizer(longPressRecognizer)
-        addTarget(self, action: Selector("handleShortPress:"), forControlEvents: UIControlEvents.TouchUpInside)
+        addTarget(self, action: #selector(LongPressRecordButton.handleShortPress(_:)), forControlEvents: UIControlEvents.TouchUpInside)
     }
     
     private func redraw() {
@@ -197,7 +197,10 @@ import UIKit
     
     @objc private func handleShortPress(sender: AnyObject?) {
         if shouldShowTooltip {
-            if isTooltipVisible() == false && delegate?.longPressRecordButtonShouldShowToolTip?(self) == true {
+            if isTooltipVisible() == false {
+                if let delegate = delegate where delegate.longPressRecordButtonShouldShowToolTip?(self) == false {
+                    return
+                }
                 let tooltip = ToolTip(title: toolTipText, foregroundColor: toolTipTextColor, backgroundColor: toolTipColor, font: toolTipFont, recordButton: self)
                 tooltip.show()
                 delegate?.longPressRecordButtonDidShowToolTip?(self)

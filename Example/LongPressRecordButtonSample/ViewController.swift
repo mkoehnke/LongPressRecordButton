@@ -34,7 +34,7 @@ class ViewController: UIViewController, LongPressRecordButtonDelegate {
     var startTime : CFTimeInterval?
     
     lazy var displayLink : CADisplayLink? = {
-        var instance = CADisplayLink(target: self, selector: Selector("animateProgress:"))
+        var instance = CADisplayLink(target: self, selector: #selector(ViewController.animateProgress(_:)))
         instance.paused = true
         instance.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSRunLoopCommonModes)
         return instance
