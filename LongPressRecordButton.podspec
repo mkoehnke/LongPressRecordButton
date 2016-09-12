@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "LongPressRecordButton"
-  s.version      = "1.0.2"
+  s.version      = "1.5.0"
   s.summary      = "Simple and easy-to-use record button for iOS, that enforces a long press, similar to Instagram"
 
   s.description  = <<-DESC
