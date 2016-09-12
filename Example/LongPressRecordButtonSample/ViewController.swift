@@ -35,8 +35,8 @@ class ViewController: UIViewController, LongPressRecordButtonDelegate {
     
     lazy var displayLink : CADisplayLink? = {
         var instance = CADisplayLink(target: self, selector: #selector(ViewController.animateProgress(_:)))
-        instance.paused = true
-        instance.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSRunLoopCommonModes)
+        instance.isPaused = true
+        instance.add(to: RunLoop.main, forMode: RunLoopMode.commonModes)
         return instance
     }()
     
@@ -46,32 +46,32 @@ class ViewController: UIViewController, LongPressRecordButtonDelegate {
         setupDisplayLink()
     }
 
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return UIStatusBarStyle.LightContent
+    override var preferredStatusBarStyle : UIStatusBarStyle {
+        return UIStatusBarStyle.lightContent
     }
     
     
     // MARK: LongPressRecordButton Delegate
     
-    func longPressRecordButtonDidStartLongPress(button: LongPressRecordButton) {
+    func longPressRecordButtonDidStartLongPress(_ button: LongPressRecordButton) {
         startTime = CACurrentMediaTime();
-        displayLink?.paused = false
+        displayLink?.isPaused = false
     }
     
-    func longPressRecordButtonDidStopLongPress(button: LongPressRecordButton) {
-        displayLink?.paused = true
+    func longPressRecordButtonDidStopLongPress(_ button: LongPressRecordButton) {
+        displayLink?.isPaused = true
     }
     
     // MARK: DisplayLink
 
-    private func setupDisplayLink() {
+    fileprivate func setupDisplayLink() {
         progress = 0.0
         startTime = CACurrentMediaTime();
-        displayLink?.paused = true
+        displayLink?.isPaused = true
         progressView?.progress = Float(progress)
     }
     
-    @objc private func animateProgress(displayLink : CADisplayLink) {
+    @objc fileprivate func animateProgress(_ displayLink : CADisplayLink) {
         if (progress > duration) {
             setupDisplayLink()
             return
