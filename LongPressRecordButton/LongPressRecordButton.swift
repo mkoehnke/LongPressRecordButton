@@ -31,13 +31,13 @@ import UIKit
 /// The delegate protocol of LongPressRecordButton.
 @objc public protocol LongPressRecordButtonDelegate {
     /// Tells the delegate that a long press has started.
-    func longPressRecordButtonDidStartLongPress(button : LongPressRecordButton)
+    func longPressRecordButtonDidStartLongPress(_ button : LongPressRecordButton)
     /// Tells the delegate that a long press has finished.
-    func longPressRecordButtonDidStopLongPress(button: LongPressRecordButton)
+    func longPressRecordButtonDidStopLongPress(_ button: LongPressRecordButton)
     /// Tells the delegate that a tool tip should be presented when a short press occured.
-    optional func longPressRecordButtonShouldShowToolTip(button : LongPressRecordButton) -> Bool
+    @objc optional func longPressRecordButtonShouldShowToolTip(_ button : LongPressRecordButton) -> Bool
     /// Tells the delegate that a short press has occured and therefore a tooltip is shown.
-    optional func longPressRecordButtonDidShowToolTip(button : LongPressRecordButton)
+    @objc optional func longPressRecordButtonDidShowToolTip(_ button : LongPressRecordButton)
 }
 
 //================================================
@@ -45,64 +45,64 @@ import UIKit
 //================================================
 
 /// The LongPressRecordButton class.
-@IBDesignable public class LongPressRecordButton : UIControl {
+@IBDesignable open class LongPressRecordButton : UIControl {
     
     /// The delegate of the LongPressRecordButton instance.
-    public weak var delegate : LongPressRecordButtonDelegate?
+    open weak var delegate : LongPressRecordButtonDelegate?
     
     /// The minmal duration, that the record button is supposed
     /// to stay in the 'selected' state, once the long press has
     /// started.
-    @IBInspectable public var minPressDuration : Float = 1.0
+    @IBInspectable open var minPressDuration : Float = 1.0
     
     /// The width of the outer ring of the record button.
-    @IBInspectable public var ringWidth : CGFloat = 4.0 {
+    @IBInspectable open var ringWidth : CGFloat = 4.0 {
         didSet { redraw() }
     }
     
     /// The color of the outer ring of the record button.
-    @IBInspectable public var ringColor : UIColor? = UIColor.whiteColor() {
+    @IBInspectable open var ringColor : UIColor? = UIColor.white {
         didSet { redraw() }
     }
     
     /// The margin between the outer ring and inner circle
     /// of the record button.
-    @IBInspectable public var circleMargin : CGFloat = 0.0 {
+    @IBInspectable open var circleMargin : CGFloat = 0.0 {
         didSet { redraw() }
     }
     
     /// The color of the inner circle of the record button.
-    @IBInspectable public var circleColor : UIColor? = UIColor.redColor() {
+    @IBInspectable open var circleColor : UIColor? = UIColor.red {
         didSet { redraw() }
     }
     
     /// The text that the tooltip is supposed to display,
     /// if the user did short-press the button.
-    public lazy var toolTipText : String = {
+    open lazy var toolTipText : String = {
         return "Tap and Hold"
     }()
     
     /// The font of the tooltip text.
-    public var toolTipFont : UIFont = {
-        return UIFont.systemFontOfSize(12.0)
+    open var toolTipFont : UIFont = {
+        return UIFont.systemFont(ofSize: 12.0)
     }()
     
     /// The background color of the tooltip.
-    public var toolTipColor : UIColor = {
-        return UIColor.whiteColor()
+    open var toolTipColor : UIColor = {
+        return UIColor.white
     }()
     
     /// The text color of the tooltip.
-    public var toolTipTextColor : UIColor = {
+    open var toolTipTextColor : UIColor = {
         return UIColor(white: 0.0, alpha: 0.8)
     }()
     
     /// Determines if the record button is enabled.
-    override public var enabled: Bool {
+    override open var isEnabled: Bool {
         didSet {
-            let state : UIControlState = enabled ? .Normal : .Disabled
-            circleLayer.fillColor = circleColorForState(state)?.CGColor
-            ringLayer.strokeColor = ringColorForState(state)?.CGColor
+            let state : UIControlState = isEnabled ? UIControlState() : .disabled
+            circleLayer.fillColor = circleColorForState(state)?.cgColor
+            ringLayer.strokeColor = ringColorForState(state)?.cgColor
         }
     }
     
@@ -128,31 +128,31 @@ import UIKit
     
     // MARK: Private
     
-    private var longPressRecognizer : UILongPressGestureRecognizer!
-    private var touchesStarted : CFTimeInterval?
-    private var touchesEnded : Bool = false
-    private var shouldShowTooltip : Bool = true
+    fileprivate var longPressRecognizer : UILongPressGestureRecognizer!
+    fileprivate var touchesStarted : CFTimeInterval?
+    fileprivate var touchesEnded : Bool = false
+    fileprivate var shouldShowTooltip : Bool = true
     
-    private var ringLayer : CAShapeLayer!
-    private var circleLayer : CAShapeLayer!
+    fileprivate var ringLayer : CAShapeLayer!
+    fileprivate var circleLayer : CAShapeLayer!
     
-    private var outerRect : CGRect {
-        return CGRectMake(ringWidth/2, ringWidth/2, bounds.size.width-ringWidth, bounds.size.height-ringWidth)
+    fileprivate var outerRect : CGRect {
+        return CGRect(x: ringWidth/2, y: ringWidth/2, width: bounds.size.width-ringWidth, height: bounds.size.height-ringWidth)
     }
     
-    private var innerRect : CGRect {
+    fileprivate var innerRect : CGRect {
         let innerX = outerRect.origin.x + (ringWidth/2) + circleMargin
         let innerY = outerRect.origin.y + (ringWidth/2) + circleMargin
         let innerWidth = outerRect.size.width - ringWidth - (circleMargin * 2)
         let innerHeight = outerRect.size.height - ringWidth - (circleMargin * 2)
-        return CGRectMake(innerX, innerY, innerWidth, innerHeight)
+        return CGRect(x: innerX, y: innerY, width: innerWidth, height: innerHeight)
     }
     
-    private func commonInit() {
-        backgroundColor = UIColor.clearColor()
+    fileprivate func commonInit() {
+        backgroundColor = UIColor.clear
         
         ringLayer = CAShapeLayer()
-        ringLayer.fillColor = UIColor.clearColor().CGColor
+        ringLayer.fillColor = UIColor.clear.cgColor
         ringLayer.frame = bounds
         layer.addSublayer(ringLayer)
         
@@ -166,39 +166,40 @@ import UIKit
         longPressRecognizer.cancelsTouchesInView = false
         longPressRecognizer.minimumPressDuration = 0.3
         self.addGestureRecognizer(longPressRecognizer)
-        addTarget(self, action: #selector(LongPressRecordButton.handleShortPress(_:)), forControlEvents: UIControlEvents.TouchUpInside)
+        addTarget(self, action: #selector(LongPressRecordButton.handleShortPress(_:)), for: UIControlEvents.touchUpInside)
     }
     
-    private func redraw() {
+    fileprivate func redraw() {
         ringLayer.lineWidth = ringWidth
-        ringLayer.strokeColor = ringColor?.CGColor
-        ringLayer.path = UIBezierPath(ovalInRect: outerRect).CGPath
+        ringLayer.strokeColor = ringColor?.cgColor
+        ringLayer.path = UIBezierPath(ovalIn: outerRect).cgPath
         ringLayer.setNeedsDisplay()
         
-        circleLayer.fillColor = circleColor?.CGColor
-        circleLayer.path = UIBezierPath(ovalInRect: innerRect).CGPath
+        circleLayer.fillColor = circleColor?.cgColor
+        circleLayer.path = UIBezierPath(ovalIn: innerRect).cgPath
         circleLayer.setNeedsDisplay()
     }
     
     /// Sublayer layouting
-    override public func layoutSubviews() {
+    override open func layoutSubviews() {
         super.layoutSubviews()
         ringLayer.frame = bounds
         circleLayer.frame = bounds
+        redraw()
     }
     
-    @objc private func handleLongPress(recognizer: UILongPressGestureRecognizer) {
-        if (recognizer.state == .Began) {
+    @objc fileprivate func handleLongPress(_ recognizer: UILongPressGestureRecognizer) {
+        if (recognizer.state == .began) {
             buttonPressed()
-        } else if (recognizer.state == .Ended) {
+        } else if (recognizer.state == .ended) {
             buttonReleased()
         }
     }
     
-    @objc private func handleShortPress(sender: AnyObject?) {
+    @objc fileprivate func handleShortPress(_ sender: AnyObject?) {
         if shouldShowTooltip {
             if isTooltipVisible() == false {
-                if let delegate = delegate where delegate.longPressRecordButtonShouldShowToolTip?(self) == false {
+                if let delegate = delegate , delegate.longPressRecordButtonShouldShowToolTip?(self) == false {
                     return
                 }
                 let tooltip = ToolTip(title: toolTipText, foregroundColor: toolTipTextColor, backgroundColor: toolTipColor, font: toolTipFont, recordButton: self)
@@ -209,20 +210,20 @@ import UIKit
         shouldShowTooltip = true
     }
     
-    private func isTooltipVisible() -> Bool {
-        return layer.sublayers?.filter { $0.isKindOfClass(ToolTip.self) }.count > 0
+    fileprivate func isTooltipVisible() -> Bool {
+        return layer.sublayers?.filter({ $0.isKind(of: ToolTip.self) }).first != nil
     }
     
-    private func buttonPressed() {
+    fileprivate func buttonPressed() {
         if touchesStarted == nil {
-            circleLayer.fillColor = circleColor?.darkerColor().CGColor
+            circleLayer.fillColor = circleColor?.darkerColor().cgColor
             setNeedsDisplay()
             touchesStarted = CACurrentMediaTime()
             touchesEnded = false
             shouldShowTooltip = false
             
-            let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(Double(minPressDuration) * Double(NSEC_PER_SEC)))
-            dispatch_after(delayTime, dispatch_get_main_queue()) { [weak self] in
+            let delayTime = DispatchTime.now() + Double(Int64(Double(minPressDuration) * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
+            DispatchQueue.main.asyncAfter(deadline: delayTime) { [weak self] in
                 if let strongSelf = self {
                     if strongSelf.touchesEnded { strongSelf.buttonReleased() }
                 }
@@ -231,40 +232,40 @@ import UIKit
         }
     }
     
-    private func buttonReleased() {
-        if let touchesStarted = touchesStarted where (CACurrentMediaTime() - touchesStarted) >= Double(minPressDuration) {
+    fileprivate func buttonReleased() {
+        if let touchesStarted = touchesStarted , (CACurrentMediaTime() - touchesStarted) >= Double(minPressDuration) {
             self.touchesStarted = nil
-            circleLayer.fillColor = circleColor?.CGColor
+            circleLayer.fillColor = circleColor?.cgColor
             delegate?.longPressRecordButtonDidStopLongPress(self)
         } else {
             touchesEnded = true
         }
     }
     
-    private func ringColorForState(state : UIControlState) -> UIColor? {
+    fileprivate func ringColorForState(_ state : UIControlState) -> UIColor? {
         switch state {
-        case UIControlState.Normal: return ringColor
-        case UIControlState.Highlighted: return ringColor
-        case UIControlState.Disabled: return ringColor?.colorWithAlphaComponent(0.5)
-        case UIControlState.Selected: return ringColor
+        case UIControlState(): return ringColor
+        case UIControlState.highlighted: return ringColor
+        case UIControlState.disabled: return ringColor?.withAlphaComponent(0.5)
+        case UIControlState.selected: return ringColor
         default: return nil
         }
     }
     
-    private func circleColorForState(state: UIControlState) -> UIColor? {
+    fileprivate func circleColorForState(_ state: UIControlState) -> UIColor? {
         switch state {
-        case UIControlState.Normal: return circleColor
-        case UIControlState.Highlighted: return circleColor?.darkerColor()
-        case UIControlState.Disabled: return circleColor?.colorWithAlphaComponent(0.5)
-        case UIControlState.Selected: return circleColor?.darkerColor()
+        case UIControlState(): return circleColor
+        case UIControlState.highlighted: return circleColor?.darkerColor()
+        case UIControlState.disabled: return circleColor?.withAlphaComponent(0.5)
+        case UIControlState.selected: return circleColor?.darkerColor()
         default: return nil
         }
     }
     
     /// @IBDesignable support
-    public override func prepareForInterfaceBuilder() {
+    open override func prepareForInterfaceBuilder() {
         super.prepareForInterfaceBuilder()
-        backgroundColor = UIColor.clearColor()
+        backgroundColor = UIColor.clear
     }
 }
 
@@ -274,8 +275,8 @@ import UIKit
 //================================================
 
 private extension NSAttributedString {
-    private func sizeToFit(maxSize: CGSize) -> CGSize {
-        return boundingRectWithSize(maxSize, options:(NSStringDrawingOptions.UsesLineFragmentOrigin), context:nil).size
+    func sizeToFit(_ maxSize: CGSize) -> CGSize {
+        return boundingRect(with: maxSize, options:(NSStringDrawingOptions.usesLineFragmentOrigin), context:nil).size
     }
 }
 
@@ -300,13 +301,13 @@ private extension UIColor {
 // MARK: ToolTip
 //================================================
 
-private class ToolTip : CAShapeLayer {
+private class ToolTip : CAShapeLayer, CAAnimationDelegate {
     
-    private weak var recordButton : LongPressRecordButton?
-    private let defaultMargin : CGFloat = 5.0
-    private let defaultArrowSize : CGFloat = 5.0
-    private let defaultCornerRadius : CGFloat = 5.0
-    private var textLayer : CATextLayer!
+    fileprivate weak var recordButton : LongPressRecordButton?
+    fileprivate let defaultMargin : CGFloat = 5.0
+    fileprivate let defaultArrowSize : CGFloat = 5.0
+    fileprivate let defaultCornerRadius : CGFloat = 5.0
+    fileprivate var textLayer : CATextLayer!
     
     init(title: String, foregroundColor: UIColor, backgroundColor: UIColor, font: UIFont, recordButton: LongPressRecordButton) {
         super.init()
@@ -317,7 +318,7 @@ private class ToolTip : CAShapeLayer {
         super.init(coder: aDecoder)
     }
     
-    private func commonInit(title: String, foregroundColor: UIColor, backgroundColor: UIColor, font: UIFont, recordButton: LongPressRecordButton) {
+    fileprivate func commonInit(_ title: String, foregroundColor: UIColor, backgroundColor: UIColor, font: UIFont, recordButton: LongPressRecordButton) {
         self.recordButton = recordButton
         
         let rect = recordButton.bounds
@@ -327,59 +328,59 @@ private class ToolTip : CAShapeLayer {
         textLayer = CATextLayer()
         textLayer.string = text
         textLayer.alignmentMode = kCAAlignmentCenter
-        textLayer.contentsScale = UIScreen.mainScreen().scale
+        textLayer.contentsScale = UIScreen.main.scale
         
         // ShapeLayer
-        let screenSize = UIScreen.mainScreen().bounds.size
-        let basePoint = CGPointMake(rect.origin.x + (rect.size.width / 2), rect.origin.y - (defaultMargin * 2))
+        let screenSize = UIScreen.main.bounds.size
+        let basePoint = CGPoint(x: rect.origin.x + (rect.size.width / 2), y: rect.origin.y - (defaultMargin * 2))
         let baseSize = text.sizeToFit(screenSize)
         
         let x       = basePoint.x - (baseSize.width / 2) - (defaultMargin * 2)
         let y       = basePoint.y - baseSize.height - (defaultMargin * 2) - defaultArrowSize
         let width   = baseSize.width + (defaultMargin * 4)
         let height  = baseSize.height + (defaultMargin * 2) + defaultArrowSize
-        frame = CGRectMake(x, y, width, height)
+        frame = CGRect(x: x, y: y, width: width, height: height)
         
-        path = toolTipPath(bounds, arrowSize: defaultArrowSize, radius: defaultCornerRadius).CGPath
-        fillColor = backgroundColor.CGColor
+        path = toolTipPath(bounds, arrowSize: defaultArrowSize, radius: defaultCornerRadius).cgPath
+        fillColor = backgroundColor.cgColor
         addSublayer(textLayer)
     }
     
-    private func toolTipPath(frame: CGRect, arrowSize: CGFloat, radius: CGFloat) -> UIBezierPath {
-        let mid = CGRectGetMidX(frame)
-        let width = CGRectGetMaxX(frame)
-        let height = CGRectGetMaxY(frame)
+    fileprivate func toolTipPath(_ frame: CGRect, arrowSize: CGFloat, radius: CGFloat) -> UIBezierPath {
+        let mid = frame.midX
+        let width = frame.maxX
+        let height = frame.maxY
         
         let path = UIBezierPath()
-        path.moveToPoint(CGPointMake(mid, height))
-        path.addLineToPoint(CGPointMake(mid - arrowSize, height - arrowSize))
-        path.addLineToPoint(CGPointMake(radius, height - arrowSize))
-        path.addArcWithCenter(CGPointMake(radius, height - arrowSize - radius), radius: radius, startAngle: 90.radians, endAngle: 180.radians, clockwise: true)
-        path.addLineToPoint(CGPointMake(0, radius))
-        path.addArcWithCenter(CGPointMake(radius, radius), radius: radius, startAngle: 180.radians, endAngle: 270.radians, clockwise: true)
-        path.addLineToPoint(CGPointMake(width - radius, 0))
-        path.addArcWithCenter(CGPointMake(width - radius, radius), radius: radius, startAngle: 270.radians, endAngle: 0.radians, clockwise: true)
-        path.addLineToPoint(CGPointMake(width, height - arrowSize - radius))
-        path.addArcWithCenter(CGPointMake(width - radius, height - arrowSize - radius), radius: radius, startAngle: 0.radians, endAngle: 90.radians, clockwise: true)
-        path.addLineToPoint(CGPointMake(mid + arrowSize, height - arrowSize))
-        path.addLineToPoint(CGPointMake(mid, height))
-        path.closePath()
+        path.move(to: CGPoint(x: mid, y: height))
+        path.addLine(to: CGPoint(x: mid - arrowSize, y: height - arrowSize))
+        path.addLine(to: CGPoint(x: radius, y: height - arrowSize))
+        path.addArc(withCenter: CGPoint(x: radius, y: height - arrowSize - radius), radius: radius, startAngle: 90.radians, endAngle: 180.radians, clockwise: true)
+        path.addLine(to: CGPoint(x: 0, y: radius))
+        path.addArc(withCenter: CGPoint(x: radius, y: radius), radius: radius, startAngle: 180.radians, endAngle: 270.radians, clockwise: true)
+        path.addLine(to: CGPoint(x: width - radius, y: 0))
+        path.addArc(withCenter: CGPoint(x: width - radius, y: radius), radius: radius, startAngle: 270.radians, endAngle: 0.radians, clockwise: true)
+        path.addLine(to: CGPoint(x: width, y: height - arrowSize - radius))
+        path.addArc(withCenter: CGPoint(x: width - radius, y: height - arrowSize - radius), radius: radius, startAngle: 0.radians, endAngle: 90.radians, clockwise: true)
+        path.addLine(to: CGPoint(x: mid + arrowSize, y: height - arrowSize))
+        path.addLine(to: CGPoint(x: mid, y: height))
+        path.close()
         return path
     }
     
     override func layoutSublayers() {
         super.layoutSublayers()
-        textLayer.frame = CGRectMake(defaultMargin, defaultMargin, bounds.size.width-(defaultMargin*2), bounds.size.height-(defaultMargin*2))
+        textLayer.frame = CGRect(x: defaultMargin, y: defaultMargin, width: bounds.size.width-(defaultMargin*2), height: bounds.size.height-(defaultMargin*2))
     }
     
-    private func animation(fromTransform: CATransform3D, toTransform: CATransform3D) -> CASpringAnimation {
+    fileprivate func animation(_ fromTransform: CATransform3D, toTransform: CATransform3D) -> CASpringAnimation {
         let animation = CASpringAnimation(keyPath: "transform")
         animation.damping = 15
         animation.initialVelocity = 10
         animation.fillMode = kCAFillModeForwards
-        animation.removedOnCompletion = false
-        animation.fromValue = NSValue(CATransform3D: fromTransform)
-        animation.toValue = NSValue(CATransform3D: toTransform)
+        animation.isRemovedOnCompletion = false
+        animation.fromValue = NSValue(caTransform3D: fromTransform)
+        animation.toValue = NSValue(caTransform3D: toTransform)
         animation.duration = animation.settlingDuration
         animation.delegate = self
         animation.autoreverses = true
@@ -389,10 +390,10 @@ private class ToolTip : CAShapeLayer {
     func show() {
         recordButton?.layer.addSublayer(self)
         let show = animation(CATransform3DMakeScale(0, 0, 1), toTransform: CATransform3DIdentity)
-        addAnimation(show, forKey: "show")
+        add(show, forKey: "show")
     }
     
-    override func animationDidStop(anim: CAAnimation, finished flag: Bool) {
+    func animationDidStop(_ anim: CAAnimation, finished flag: Bool) {
         removeFromSuperlayer()
     }
 }
